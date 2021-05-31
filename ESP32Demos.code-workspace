@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "01-Blinky"
+		},
+		{
+			"path": "02-PWMBlinky"
+		},
+		{
+			"path": "03-TempSensor"
+		}
+	],
+	"settings": {}
+}
