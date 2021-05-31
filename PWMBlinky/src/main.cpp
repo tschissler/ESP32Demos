@@ -13,7 +13,7 @@
 #define resolution 8
 // How long should one cycle take in ms
 // A cycle is defined as the LED going from off to full brightness and back
-#define cycletime 1000
+#define cycletime 3000
 
 const int delaytime = cycletime / pow(2, resolution) / 2;
 
