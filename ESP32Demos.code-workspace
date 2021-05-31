@@ -12,6 +12,10 @@
 		{
 			"name": "04-AzureIotHub",
 			"path": "04-AzureIotHub"
+		},
+		{
+			"name": "04-AzureFunctions",
+			"path": "04-AzureFunctions"
 		}
 	],
 	"settings": {

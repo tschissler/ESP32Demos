@@ -20,13 +20,13 @@
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 // Please input the SSID and password of WiFi
-const char* ssid     = "<Type SSID here>";
-const char* password = "<Type Password here>";
+const char* ssid     = "agileMax_Guest";
+const char* password = "WLAN_agileMax";
 
 /*String containing Hostname, Device Id & Device Key in the format:                         */
 /*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"                */
 /*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessSignature=<device_sas_token>"    */
-static const char* connectionString = "<Type connectionString here>";
+static const char* connectionString = "HostName=IoTHubTschissler.azure-devices.net;DeviceId=DemoDevice1;SharedAccessKey=nWK+C1wR/R/gYSadwiVOkX/Co5WvuNuI4MAraYgSqQ0=";
 
 const char *messageData = "{\"deviceId\":\"%s\", \"messageId\":%d, \"Temperature\":%f, \"Humidity\":%f}";
 
