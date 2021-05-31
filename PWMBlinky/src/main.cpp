@@ -11,6 +11,11 @@
 
 #define freq 5000
 #define resolution 8
+// How long should one cycle take in ms
+// A cycle is defined as the LED going from off to full brightness and back
+#define cycletime 1000
+
+const int delaytime = cycletime / pow(2, resolution) / 2;
 
 void setup() {
   ledcSetup(redChannel, freq, resolution);
@@ -28,12 +33,12 @@ void loop() {
     for (int brightness=0; brightness<=pow(2, resolution); brightness++)
     {
       ledcWrite(channel, brightness);
-      delay(5);
+      delay(delaytime);
     }
     for (int brightness=pow(2, resolution); brightness>=0; brightness--)
     {
       ledcWrite(channel, brightness);
-      delay(5);
+      delay(delaytime);
     }
   }
 }
