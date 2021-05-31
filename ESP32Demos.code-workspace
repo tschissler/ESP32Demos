@@ -8,7 +8,13 @@
 		},
 		{
 			"path": "03-TempSensor"
+		},
+		{
+			"name": "04-AzureIotHub",
+			"path": "04-AzureIotHub"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"debug.internalConsoleOptions": "neverOpen"
+	}
 }
