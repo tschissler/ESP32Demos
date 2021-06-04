@@ -7,7 +7,7 @@
 
 #define redChannel 0
 #define greenChannel 1
-#define bluechannel 2
+#define blueChannel 2
 
 #define freq 5000
 #define resolution 8
@@ -20,11 +20,11 @@ const int delaytime = cycletime / pow(2, resolution) / 2;
 void setup() {
   ledcSetup(redChannel, freq, resolution);
   ledcSetup(greenChannel, freq, resolution);
-  ledcSetup(bluechannel, freq, resolution);
+  ledcSetup(blueChannel, freq, resolution);
 
   ledcAttachPin(redLED, redChannel);  
   ledcAttachPin(greenLED, greenChannel);  
-  ledcAttachPin(blueLED, bluechannel);  
+  ledcAttachPin(blueLED, blueChannel);  
 }
 
 void loop() {
