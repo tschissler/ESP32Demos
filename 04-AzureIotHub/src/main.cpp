@@ -7,9 +7,22 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include <ArduinoJson.h>
 
-#define INTERVAL 10000
-#define DEVICE_ID "Esp32Device"
+#define onboardLED 2
+#define redLED 27
+#define greenLED 14
+#define blueLED 16
+
+#define redChannel 0
+#define greenChannel 1
+#define blueChannel 2
+
+#define pwm_freq 5000
+#define pwm_resolution 8
+
+#define INTERVAL 30000
+#define DEVICE_ID "DemoDevice"
 #define MESSAGE_MAX_LEN 256
 
 #define DHTPIN 17
@@ -20,13 +33,11 @@
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 // Please input the SSID and password of WiFi
-const char* ssid     = "agileMax_Guest";
-const char* password = "WLAN_agileMax";
+const char* ssid     = "WLAN_M1_Guest";
+const char* password = "NichtUebertreiben";
 
 /*String containing Hostname, Device Id & Device Key in the format:                         */
-/*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessKey=<device_key>"                */
-/*  "HostName=<host_name>;DeviceId=<device_id>;SharedAccessSignature=<device_sas_token>"    */
-static const char* connectionString = "HostName=IoTHubTschissler.azure-devices.net;DeviceId=DemoDevice1;SharedAccessKey=nWK+C1wR/R/gYSadwiVOkX/Co5WvuNuI4MAraYgSqQ0=";
+static const char* connectionString = "HostName=IoTHub-tschissler.azure-devices.net;DeviceId=DemoDevice;SharedAccessKey=GsqqUNQi8Wn35W2jYeW8yOSvr9sS/69xs/d3Ava+ok8=";
 
 const char *messageData = "{\"deviceId\":\"%s\", \"messageId\":%d, \"Temperature\":%f, \"Humidity\":%f}";
 
@@ -77,6 +88,12 @@ static void DeviceTwinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsig
   temp[size] = '\0';
   // Display Twin message.
   Serial.println(temp);
+  DynamicJsonDocument doc(1024);
+  deserializeJson(doc, temp);
+
+  ledcWrite(redChannel, doc["red"]);
+  ledcWrite(blueChannel, doc["blue"]);
+  ledcWrite(greenChannel, doc["green"]);
   free(temp);
 }
 
@@ -164,6 +181,14 @@ void setup()
   Serial.println(F("------------------------------------"));
   // Set delay between sensor readings based on sensor details.
 
+  Serial.println(F("Initializing LED PWM"));
+  ledcSetup(redChannel, pwm_freq, pwm_resolution);
+  ledcSetup(greenChannel, pwm_freq, pwm_resolution);
+  ledcSetup(blueChannel, pwm_freq, pwm_resolution);
+
+  ledcAttachPin(redLED, redChannel);  
+  ledcAttachPin(greenLED, greenChannel);  
+  ledcAttachPin(blueLED, blueChannel);  
 }
 
 void loop()
