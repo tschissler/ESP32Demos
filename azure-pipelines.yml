@@ -26,21 +26,21 @@ stages:
 
     steps:
     
-    - task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
+    - task: ReplaceTokens@1
       displayName: 'Replace IoTHub Connection string in code file'
       inputs:
-        sourcePath: $(Build.SourcesDirectory)/08-DeviceTwinUpdate
-        filePattern: **\*.cpp
-        tokenRegex: '<(\w+)>' 
+        sourcePath: 
+        filePattern: '*.cpp'
+        tokenRegex: '<(\w+)>'
     
-    - task: ReplaceInFilesTextByText@2
-      inputs:
-        parameterSearchDirectory: '$(Build.SourcesDirectory)'
-        parameterSearchText: '<IoTHubConnectionString>'
-        parameterReplaceText: '$(IoTHubConnectionString)'
-        parameterTypeOfSearch: 'filesSearchPattern'
-        parameterFilesPattern: '*.cpp'
-      displayName: 'Replace IoTHub Connection string in code file'
+    # - task: ReplaceInFilesTextByText@2
+    #   inputs:
+    #     parameterSearchDirectory: '$(Build.SourcesDirectory)'
+    #     parameterSearchText: '<IoTHubConnectionString>'
+    #     parameterReplaceText: '$(IoTHubConnectionString)'
+    #     parameterTypeOfSearch: 'filesSearchPattern'
+    #     parameterFilesPattern: '*.cpp'
+    #   displayName: 'Replace IoTHub Connection string in code file'
 
     - script: platformio run -e esp32dev -d ./08-DeviceTwinUpdate/
       displayName: 'Compile Firmware'
