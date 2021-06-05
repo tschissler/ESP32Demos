@@ -48,4 +48,15 @@ stages:
         ArtifactName: 'Firmware'
         PathtoPublish: $(Build.ArtifactStagingDirectory)
         publishLocation: Container
-        TargetPath: $(Build.BuildNumber)
+        TargetPath: .
+
+    - task: AzureFileCopy@4
+      inputs:
+        SourcePath: '$(Build.ArtifactStagingDirectory)/*.bin'
+        azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
+        Destination: 'AzureBlob'
+        storage: 'iotdemotschissler'
+        ContainerName: 'FirmwareUpdates'
+        BlobPrefix: '$(Build.BuildNumber)'
+       
+    
