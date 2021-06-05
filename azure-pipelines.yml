@@ -13,8 +13,8 @@ trigger:
 - master
 
 stages:
-- stage: Prod
-  displayName: Production Stage
+- stage: Build
+  displayName: Build Stage
   
   jobs:
   - job: Build
@@ -22,7 +22,7 @@ stages:
     container: platformio
 
     pool:
-      vmImage: windows-latest
+      vmImage: ubuntu-latest
 
     steps:
     
@@ -50,6 +50,13 @@ stages:
         publishLocation: Container
         TargetPath: .
 
+  - job: CopyToBlob
+    displayName: 'Copy firmware version to Blob storage'
+
+    pool: 
+      vmImage: windows-latest
+
+    steps:
     - task: AzureFileCopy@4
       inputs:
         SourcePath: '$(Build.ArtifactStagingDirectory)/*.bin'
