@@ -1,0 +1,32 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+resources:
+  containers:
+  - container: platformio
+    image: infinitecoding/platformio-for-ci:latest   
+    options: -u root    
+
+trigger:
+- master
+
+stages:
+- stage: Prod
+  displayName: Production Stage
+  
+  jobs:
+  - job: Build
+    displayName: 'Build Firmware with PlatformIO'
+    container: platformio
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+    - script: cd ./08-DeviceTwinUpdate/
+      displayName: 'Use the subfolder for the DeviceTwinUpdate'
+
+    - script: platformio run -e esp32dev -d .
+      displayName: 'Compile Firmware'
