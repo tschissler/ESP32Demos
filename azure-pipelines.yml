@@ -52,6 +52,7 @@ stages:
 
   - job: PublishToBlob
     displayName: 'Publish Firmware to Blob'
+    dependsOn: Build
 
     pool:
       vmImage: windows-latest
@@ -60,9 +61,9 @@ stages:
     - task: DownloadBuildArtifacts@0
       inputs:
         buildType: 'current'
-        downloadType: 'specific'
+        downloadType: 'single'
         artifactName: 'Firmware'
-        #downloadPath: '$(System.ArtifactsDirectory)'
+        downloadPath: '$(System.ArtifactsDirectory)'
 
     - task: AzureFileCopy@4
       inputs:
