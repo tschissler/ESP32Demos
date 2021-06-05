@@ -29,7 +29,7 @@ stages:
     - task: ReplaceTokens@1
       displayName: 'Replace IoTHub Connection string in code file'
       inputs:
-        sourcePath: 
+        sourcePath: $(Build.SourcesDirectory)/08-DeviceTwinUpdate
         filePattern: '*.cpp'
         tokenRegex: '<(\w+)>'
     
