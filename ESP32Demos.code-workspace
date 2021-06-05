@@ -23,6 +23,9 @@
 		{
 			"name": "07-OTAUpdateVersion",
 			"path": "07-OTAUpdateVersion"
+		},
+		{
+			"path": "08-DeviceTwinUpdate"
 		}
 	],
 	"settings": {
