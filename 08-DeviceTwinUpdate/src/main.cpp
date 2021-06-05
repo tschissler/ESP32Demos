@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include "AzureIotHub.h"
 #include "Esp32MQTTClient.h"
+#include <ESP32httpUpdate.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
@@ -18,12 +19,18 @@
 #define greenChannel 1
 #define blueChannel 2
 
+int redBrightness = 255;
+int greenBrightness = 0;
+int blueBrightness = 0;
+
 #define pwm_freq 5000
 #define pwm_resolution 8
 
 #define INTERVAL 30000
 #define DEVICE_ID "DemoDevice"
 #define MESSAGE_MAX_LEN 256
+#define CURRENT_VERSION "<CurrentFirmwareVersion>"
+#define BLOB_STORAGE_ROOT "<BlobStorageRootUrl>"
 
 #define DHTPIN 17
 // Uncomment the type of sensor in use:
@@ -49,6 +56,30 @@ static uint64_t send_interval_ms;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utilities
+
+static void updateFromBLOB(String url) {
+    Serial.print("Downloading new firmware from: ");
+    Serial.println(url);
+    
+    t_httpUpdate_return ret = ESPhttpUpdate.update(url);
+    
+    switch(ret) {
+        case HTTP_UPDATE_FAILED:
+            Serial.printf("HTTP_UPDATE_FAILD Error (%d): %s", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
+
+        case HTTP_UPDATE_NO_UPDATES:
+            Serial.println("HTTP_UPDATE_NO_UPDATES");
+            break;
+
+        case HTTP_UPDATE_OK:
+            Serial.println("HTTP_UPDATE_OK");
+                Serial.println("Update done");
+            break;
+    }
+    Serial.println();
+}
+
 static void InitWifi()
 {
   Serial.println("Connecting...");
@@ -91,9 +122,23 @@ static void DeviceTwinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsig
   DynamicJsonDocument doc(1024);
   deserializeJson(doc, temp);
 
-  ledcWrite(redChannel, doc["red"]);
-  ledcWrite(blueChannel, doc["blue"]);
-  ledcWrite(greenChannel, doc["green"]);
+  redBrightness =  doc["red"];
+  blueBrightness = doc["blue"];
+  greenBrightness = doc["green"];
+
+  Serial.println("Checking desired firmware version to decide if update is needed");
+  Serial.print("Current firmware version: ");
+  Serial.println(CURRENT_VERSION);
+  Serial.print("Desired firmware version: ");
+  String desiredFirmwareVersion = doc["firmwareversion"];
+  Serial.println(desiredFirmwareVersion);
+
+  if (desiredFirmwareVersion != CURRENT_VERSION) {
+    Serial.println();
+    Serial.println("Starting Firmware OTA update ...");
+    updateFromBLOB(BLOB_STORAGE_ROOT + "/" + "desiredFirmwareVersion" + "/firmware.bin")
+  }
+
   free(temp);
 }
 
@@ -124,6 +169,18 @@ static int  DeviceMethodCallback(const char *methodName, const unsigned char *pa
   *response = (unsigned char *)strdup(responseMessage);
 
   return result;
+}
+
+void setLEDOn() {
+  ledcWrite(redChannel, redBrightness);
+  ledcWrite(greenChannel, greenBrightness);
+  ledcWrite(blueChannel, blueBrightness);
+}
+
+void setLEDOff() {
+  ledcWrite(redChannel, 0);
+  ledcWrite(greenChannel, 0);
+  ledcWrite(blueChannel, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,5 +295,13 @@ void loop()
       Esp32MQTTClient_Check();
     }
   }
-  delay(10);
+
+  setLEDOn();
+  delay(100);
+  setLEDOff();
+  delay(100);
+  setLEDOn();
+  delay(100);
+  setLEDOff();
+  delay(500);
 }
