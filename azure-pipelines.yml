@@ -56,9 +56,9 @@ stages:
     #   inputs:
     #     versionSpec: '5.x'
 
-    - task: gitversion/execute@0
-      inputs:
-        targetPath: '$(Build.SourcesDirectory)/08-DeviceTwinUpdate'
+    # - task: gitversion/execute@0
+    #   inputs:
+    #     targetPath: '$(Build.SourcesDirectory)/08-DeviceTwinUpdate'
     
     - task: PublishBuildArtifacts@1
       inputs:
