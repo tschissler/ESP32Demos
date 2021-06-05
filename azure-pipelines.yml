@@ -25,8 +25,5 @@ stages:
       vmImage: ubuntu-latest
 
     steps:
-    - script: cd ./08-DeviceTwinUpdate/
-      displayName: 'Use the subfolder for the DeviceTwinUpdate'
-
-    - script: platformio run -e esp32dev -d .
+    - script: platformio run -e esp32dev -d ./08-DeviceTwinUpdate/
       displayName: 'Compile Firmware'
