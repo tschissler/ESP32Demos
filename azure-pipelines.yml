@@ -26,6 +26,13 @@ stages:
 
     steps:
     
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
+      displayName: 'Replace IoTHub Connection string in code file'
+      inputs:
+        sourcePath: $(Build.SourcesDirectory)/08-DeviceTwinUpdate
+        filePattern: **\*.cpp
+        tokenRegex: '<(\w+)>' 
+    
     - task: ReplaceInFilesTextByText@2
       inputs:
         parameterSearchDirectory: '$(Build.SourcesDirectory)'
