@@ -65,7 +65,7 @@ stages:
         artifactName: 'Firmware'
         downloadPath: '$(System.ArtifactsDirectory)'
 
-    - task: AzureFileCopy@4
+    - task: AzureFileCopy@3
       inputs:
         SourcePath: '$(System.ArtifactsDirectory)\Firmware\firmware.bin'
         azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
