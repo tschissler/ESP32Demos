@@ -33,11 +33,11 @@
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 // Please input the SSID and password of WiFi
-const char* ssid     = "WLAN_M1_Guest";
-const char* password = "NichtUebertreiben";
+const char* ssid     = "<WiFi-SSID>";
+const char* password = "<WiFi_Password>";
 
 /*String containing Hostname, Device Id & Device Key in the format:                         */
-static const char* connectionString = "HostName=IoTHub-tschissler.azure-devices.net;DeviceId=DemoDevice;SharedAccessKey=GsqqUNQi8Wn35W2jYeW8yOSvr9sS/69xs/d3Ava+ok8=";
+static const char* connectionString = "<IoTHubConnectionString>";
 
 const char *messageData = "{\"deviceId\":\"%s\", \"messageId\":%d, \"Temperature\":%f, \"Humidity\":%f}";
 

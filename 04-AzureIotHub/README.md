@@ -9,7 +9,12 @@ In the subscription you have to create a new IoT Hub. You can do so via the Azur
 
 For this demo the F1: Free tier should be sufficient.
 
-In the IoT Hub create a new device. Use the connectionString in your code to define the device you want to connect to (line 27). Also set the WiFi parameters accordingly.
+In the IoT Hub create a new device. 
+
+Update the following parameter from code:
+- \<WiFi-SSID> : The SSID of the WiFi you want to connect to
+- \<WiFi_Password> : The WiFi password
+- \<IoTHubConnectionString> : The connection string of your device. You can copy this one from the parameters of your device in the Azure portal.
 
 In the Azure Portal change the Device Twin to change the color of the LED
 
@@ -24,4 +29,4 @@ In the Azure Portal change the Device Twin to change the color of the LED
 ...
 ```
 
-
+In order to store sensor data to a table storage, you can implement a Azure function. See 05-AzureFunction demo for more details.
