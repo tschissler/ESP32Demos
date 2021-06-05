@@ -22,7 +22,7 @@ stages:
     container: platformio
 
     pool:
-      vmImage: ubuntu-latest
+      vmImage: windows-latest
 
     steps:
     
