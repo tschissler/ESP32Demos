@@ -25,5 +25,28 @@ stages:
       vmImage: ubuntu-latest
 
     steps:
+    
+    - task: ReplaceInFilesTextByText@2
+      inputs:
+        parameterSearchDirectory: '$(Build.SourcesDirectory)'
+        parameterSearchText: '<IoTHubConnectionString>'
+        parameterReplaceText: '$(IoTHubConnectionString)'
+        parameterTypeOfSearch: 'filesSearchPattern'
+        parameterFilesPattern: '*.cpp'
+
     - script: platformio run -e esp32dev -d ./08-DeviceTwinUpdate/
       displayName: 'Compile Firmware'
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Build.SourcesDirectory)/08-DeviceTwinUpdate/.pio/build/esp32/
+        Contents: '*.bin'
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+      displayName: "Copy build output files to ArtifactsStagingDirectory"
+      
+    - task: PublishBuildArtifacts@1
+      inputs:
+        ArtifactName: 'Firmware'
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        publishLocation: Container
+        TargetPath: .
