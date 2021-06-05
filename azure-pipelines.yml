@@ -32,15 +32,6 @@ stages:
         sourcePath: $(Build.SourcesDirectory)/08-DeviceTwinUpdate
         filePattern: '**/*.cpp'
         tokenRegex: '<(\w+)>'
-    
-    # - task: ReplaceInFilesTextByText@2
-    #   inputs:
-    #     parameterSearchDirectory: '$(Build.SourcesDirectory)'
-    #     parameterSearchText: '<IoTHubConnectionString>'
-    #     parameterReplaceText: '$(IoTHubConnectionString)'
-    #     parameterTypeOfSearch: 'filesSearchPattern'
-    #     parameterFilesPattern: '*.cpp'
-    #   displayName: 'Replace IoTHub Connection string in code file'
 
     - script: platformio run -e esp32dev -d ./08-DeviceTwinUpdate/
       displayName: 'Compile Firmware'
@@ -51,15 +42,7 @@ stages:
         Contents: '*.bin'
         TargetFolder: $(Build.ArtifactStagingDirectory)
       displayName: "Copy build output files to ArtifactsStagingDirectory"
-      
-    # - task: gitversion/setup@0
-    #   inputs:
-    #     versionSpec: '5.x'
-
-    # - task: gitversion/execute@0
-    #   inputs:
-    #     targetPath: '$(Build.SourcesDirectory)/08-DeviceTwinUpdate'
-    
+        
     - task: PublishBuildArtifacts@1
       inputs:
         ArtifactName: 'Firmware'
