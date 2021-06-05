@@ -54,7 +54,7 @@ stages:
       
     - task: gitversion/setup@0
       inputs:
-        versionSpec: '1.0.x'
+        versionSpec: '5.x'
 
     - task: gitversion/execute@0
       inputs:
