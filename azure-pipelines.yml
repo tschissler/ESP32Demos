@@ -65,3 +65,5 @@ stages:
         scriptType: 'pscore'
         scriptLocation: 'inlineScript'
         inlineScript: 'az storage blob upload --account-name iotdemotschissler --container-name firmwareupdates --file $(Build.ArtifactStagingDirectory)/firmware.bin --name firmware-$(Build.BuildNumber).bin'
+
+        
