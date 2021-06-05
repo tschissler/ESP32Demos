@@ -50,20 +50,18 @@ stages:
         publishLocation: Container
         TargetPath: .
 
-  - job: CopyToBlob
-    displayName: 'Copy firmware version to Blob storage'
-
-    pool: 
-      vmImage: windows-latest
-
-    steps:
-    - task: AzureFileCopy@4
-      inputs:
-        SourcePath: '$(Build.ArtifactStagingDirectory)/*.bin'
-        azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
-        Destination: 'AzureBlob'
-        storage: 'iotdemotschissler'
-        ContainerName: 'FirmwareUpdates'
-        BlobPrefix: '$(Build.BuildNumber)'
+    # - task: AzureFileCopy@4
+    #   inputs:
+    #     SourcePath: '$(Build.ArtifactStagingDirectory)/*.bin'
+    #     azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
+    #     Destination: 'AzureBlob'
+    #     storage: 'iotdemotschissler'
+    #     ContainerName: 'FirmwareUpdates'
+    #     BlobPrefix: '$(Build.BuildNumber)'
        
-    
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
+        scriptType: 'pscore'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az storage blob upload --account-name iotdemotschissler --container-name firmwareupdates --file $(Build.ArtifactStagingDirectory)/firmware.bin --name firmware-$(Build.BuildNumber).bin'
