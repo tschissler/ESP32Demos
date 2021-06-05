@@ -52,9 +52,9 @@ stages:
         TargetFolder: $(Build.ArtifactStagingDirectory)
       displayName: "Copy build output files to ArtifactsStagingDirectory"
       
-    - task: gitversion/setup@0
-      inputs:
-        versionSpec: '5.x'
+    # - task: gitversion/setup@0
+    #   inputs:
+    #     versionSpec: '5.x'
 
     - task: gitversion/execute@0
       inputs:
@@ -65,4 +65,4 @@ stages:
         ArtifactName: 'Firmware'
         PathtoPublish: $(Build.ArtifactStagingDirectory)
         publishLocation: Container
-        TargetPath: $(GitVersion.SemVer)
+        TargetPath: $(Build.BuildNumber)
