@@ -47,7 +47,7 @@ stages:
       
     - task: CopyFiles@2
       inputs:
-        SourceFolder: $(Build.SourcesDirectory)/08-DeviceTwinUpdate/.pio/build/esp32/
+        SourceFolder: $(Build.SourcesDirectory)/08-DeviceTwinUpdate/.pio/build/esp32dev/
         Contents: '*.bin'
         TargetFolder: $(Build.ArtifactStagingDirectory)
       displayName: "Copy build output files to ArtifactsStagingDirectory"
