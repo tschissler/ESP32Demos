@@ -60,9 +60,10 @@ stages:
     - task: DownloadBuildArtifacts@0
       inputs:
         buildType: 'current'
-        downloadType: 'single'
+        downloadType: 'specific'
         artifactName: 'Firmware'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        #downloadPath: '$(System.ArtifactsDirectory)'
+
     - task: AzureFileCopy@4
       inputs:
         SourcePath: '$(System.ArtifactsDirectory)/firmware.bin'
