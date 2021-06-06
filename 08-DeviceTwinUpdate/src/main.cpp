@@ -125,8 +125,7 @@ static void DeviceTwinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsig
     return;
   }
   memcpy(temp, payLoad, size);
-  // const char* t = "{\"red\":0,\"green\":0,\"blue\":255,\"firmwareversion\":\"20210605.26\",\"$version\":15}";
-  // memcpy(temp, t, size);
+
   temp[size] = '\0';
   // Display Twin message.
   Serial.println(temp);
@@ -147,7 +146,7 @@ static void DeviceTwinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsig
   const char* desiredFirmwareVersion = doc["desired"]["firmwareversion"];
   Serial.println(desiredFirmwareVersion);
 
-  if (desiredFirmwareVersion != CURRENT_VERSION) {
+  if (strcmp(desiredFirmwareVersion, CURRENT_VERSION) != 0) {
     Serial.println();
     Serial.println("Starting Firmware OTA update ...");
     char url [1000];
@@ -205,7 +204,11 @@ void setup()
 {
   Serial.begin(115200);
   delay(500);
+  Serial.println("##############################################################");
+  Serial.println("### ESP32 Azure OTA Update Demo");
+  Serial.print("### Current Version: ");
   Serial.println(CURRENT_VERSION);
+  Serial.println("##############################################################");
   Serial.println("ESP32 Device");
   Serial.println("Initializing...");
 
@@ -321,5 +324,5 @@ void loop()
   setLEDOn();
   delay(100);
   setLEDOff();
-  delay(100);
+  delay(500);
 }
