@@ -1,0 +1,84 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+resources:
+  containers:
+  - container: platformio
+    image: infinitecoding/platformio-for-ci:latest   
+    options: -u root    
+
+trigger:
+- master
+
+stages:
+- stage: Build
+  displayName: Build Stage
+  
+  jobs:
+  - job: Build
+    displayName: 'Build Firmware with PlatformIO'
+    container: platformio
+
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+    
+    - task: ReplaceTokens@1
+      displayName: 'Replace IoTHub Connection string in code file'
+      inputs:
+        sourcePath: $(Build.SourcesDirectory)/08-DeviceTwinUpdate
+        filePattern: '**/*.cpp'
+        tokenRegex: '<(\w+)>'
+
+    - script: platformio run -e esp32dev -d ./08-DeviceTwinUpdate/
+      displayName: 'Compile Firmware'
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Build.SourcesDirectory)/08-DeviceTwinUpdate/.pio/build/esp32dev/
+        Contents: 'firmware.bin'
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+      displayName: "Copy build output files to ArtifactsStagingDirectory"
+        
+    - task: PublishBuildArtifacts@1
+      inputs:
+        ArtifactName: 'Firmware'
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        publishLocation: Container
+        TargetPath: .
+
+  - job: PublishToBlob
+    displayName: 'Publish Firmware to Blob'
+    dependsOn: Build
+
+    pool:
+      vmImage: windows-latest
+
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'Firmware'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    - task: AzureFileCopy@3
+      inputs:
+        SourcePath: '$(System.ArtifactsDirectory)\Firmware\firmware.bin'
+        azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
+        Destination: 'AzureBlob'
+        storage: 'iotdemotschissler'
+        ContainerName: 'FirmwareUpdates'
+        BlobPrefix: '$(Build.BuildNumber)'
+       
+    # - task: AzureCLI@2
+    #   inputs:
+    #     azureSubscription: 'Pay-As-You-Go Dev/Test(cd3c260d-bbb1-4a6b-b83e-96e42e956a6d)'
+    #     scriptType: 'pscore'
+    #     scriptLocation: 'inlineScript'
+    #     inlineScript: 'az storage blob upload --account-name iotdemotschissler --container-name firmwareupdates --file $(Build.ArtifactStagingDirectory)/firmware.bin --name firmware-$(Build.BuildNumber).bin'
+
+        
