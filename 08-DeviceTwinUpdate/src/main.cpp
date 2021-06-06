@@ -319,10 +319,10 @@ void loop()
 
   setLEDOn();
   delay(100);
-  setLEDOff();
-  delay(100);
-  setLEDOn();
-  delay(100);
-  setLEDOff();
-  delay(500);
+  // setLEDOff();
+  // delay(100);
+  // setLEDOn();
+  // delay(100);
+  // setLEDOff();
+  // delay(500);
 }
