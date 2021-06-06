@@ -72,7 +72,7 @@ stages:
         Destination: 'AzureBlob'
         storage: 'iotdemotschissler'
         ContainerName: 'FirmwareUpdates'
-        BlobPrefix: '$(Build.BuildNumber)'
+        BlobPrefix: 'v$(Build.BuildNumber)'
        
     # - task: AzureCLI@2
     #   inputs:
