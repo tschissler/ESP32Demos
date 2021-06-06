@@ -24,8 +24,8 @@
 #define blueChannel 2
 
 int redBrightness = 0;
-int greenBrightness = 0;
-int blueBrightness = 200;
+int greenBrightness = 100;
+int blueBrightness = 0;
 
 #define pwm_freq 5000
 #define pwm_resolution 8
