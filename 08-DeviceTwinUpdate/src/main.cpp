@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. 
 
-#include <WiFi.h>
 #include "AzureIotHub.h"
 #include "Esp32MQTTClient.h"
 #include <ESP32httpUpdate.h>
@@ -9,6 +8,11 @@
 #include <DHT.h>
 #include <DHT_U.h>
 #include <ArduinoJson.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <WiFiClient.h>
+#include <DNSServer.h>
+#include <WiFiManager.h>  
 
 #define onboardLED 2
 #define redLED 27
@@ -30,7 +34,7 @@ int blueBrightness = 0;
 #define DEVICE_ID "DemoDevice"
 #define MESSAGE_MAX_LEN 256
 #define CURRENT_VERSION "<CurrentFirmwareVersion>"
-#define BLOB_STORAGE_ROOT "<BlobStorageRootUrl>"
+#define BLOB_STORAGE_ROOT "https://iotdemotschissler.blob.core.windows.net/firmwareupdates"
 
 #define DHTPIN 17
 // Uncomment the type of sensor in use:
@@ -40,11 +44,11 @@ int blueBrightness = 0;
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 // Please input the SSID and password of WiFi
-const char* ssid     = "<WiFi-SSID>";
-const char* password = "<WiFi_Password>";
+const char* ssid     = "WLAN_M1_Guest";
+const char* password = "NichtUebertreiben";
 
 /*String containing Hostname, Device Id & Device Key in the format:                         */
-static const char* connectionString = "<IoTHubConnectionString>";
+static const char* connectionString = "HostName=IoTHub-tschissler.azure-devices.net;DeviceId=DemoDevice;SharedAccessKey=GsqqUNQi8Wn35W2jYeW8yOSvr9sS/69xs/d3Ava+ok8=";
 
 const char *messageData = "{\"deviceId\":\"%s\", \"messageId\":%d, \"Temperature\":%f, \"Humidity\":%f}";
 
@@ -88,6 +92,11 @@ static void InitWifi()
     delay(500);
     Serial.print(".");
   }
+
+  // WiFiManager wifiManager;
+  // wifiManager.autoConnect("AutoConnectAP");
+
+  Serial.println("Successfully connected to WiFi");
   hasWifi = true;
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
@@ -116,27 +125,34 @@ static void DeviceTwinCallback(DEVICE_TWIN_UPDATE_STATE updateState, const unsig
     return;
   }
   memcpy(temp, payLoad, size);
+  // const char* t = "{\"red\":0,\"green\":0,\"blue\":255,\"firmwareversion\":\"20210605.26\",\"$version\":15}";
+  // memcpy(temp, t, size);
   temp[size] = '\0';
   // Display Twin message.
   Serial.println(temp);
-  DynamicJsonDocument doc(1024);
+  DynamicJsonDocument doc(5000);
   deserializeJson(doc, temp);
 
-  redBrightness =  doc["red"];
-  blueBrightness = doc["blue"];
-  greenBrightness = doc["green"];
+  redBrightness =  doc["desired"]["red"];
+  blueBrightness = doc["desired"]["blue"];
+  greenBrightness = doc["desired"]["green"];
+
+  Serial.print("blue: ");
+  Serial.println(blueBrightness);
 
   Serial.println("Checking desired firmware version to decide if update is needed");
   Serial.print("Current firmware version: ");
   Serial.println(CURRENT_VERSION);
   Serial.print("Desired firmware version: ");
-  String desiredFirmwareVersion = doc["firmwareversion"];
+  const char* desiredFirmwareVersion = doc["desired"]["firmwareversion"];
   Serial.println(desiredFirmwareVersion);
 
   if (desiredFirmwareVersion != CURRENT_VERSION) {
     Serial.println();
     Serial.println("Starting Firmware OTA update ...");
-    updateFromBLOB(BLOB_STORAGE_ROOT + "/" + "desiredFirmwareVersion" + "/firmware.bin")
+    char url [1000];
+    sprintf(url, "%s/%s/firmware.bin", BLOB_STORAGE_ROOT, desiredFirmwareVersion); 
+    updateFromBLOB(url);
   }
 
   free(temp);
@@ -188,6 +204,8 @@ void setLEDOff() {
 void setup()
 {
   Serial.begin(115200);
+  delay(500);
+  Serial.println(CURRENT_VERSION);
   Serial.println("ESP32 Device");
   Serial.println("Initializing...");
 
@@ -280,9 +298,9 @@ void loop()
         Serial.print(event.relative_humidity);
         Serial.println(F("%"));
       }
-      float humidity = event.relative_humidity
-      ;
-      snprintf(messagePayload,MESSAGE_MAX_LEN, messageData, DEVICE_ID, messageCount++, temperature,humidity);
+      float humidity = event.relative_humidity;
+
+      snprintf(messagePayload,MESSAGE_MAX_LEN, messageData, DEVICE_ID, messageCount++, temperature, humidity);
       Serial.println(messagePayload);
       EVENT_INSTANCE* message = Esp32MQTTClient_Event_Generate(messagePayload, MESSAGE);
       Esp32MQTTClient_Event_AddProp(message, "temperatureAlert", "true");
@@ -303,5 +321,5 @@ void loop()
   setLEDOn();
   delay(100);
   setLEDOff();
-  delay(500);
+  delay(100);
 }
