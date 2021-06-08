@@ -37,10 +37,7 @@ jobs:
           tokenPrefix: <
           tokenSuffix: >
           files: "**/*.cpp"
-        env:
-          BlobStorageRootUrl: https://iotdemotschissler.blob.core.windows.net/firmwareupdates
-          CurrentFirmwareVersion: v$GITHUB_RUN_NUMBER
-          IoTHubConnectionString: HostName=IoTHub-tschissler.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=FecNNDaJpTDn0Bv1goAWu3QdyIpBD7HQ1B9+HA7JpD0=
+
 
       # Runs a single command using the runners shell
       - name: Compile Firmware
