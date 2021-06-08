@@ -17,7 +17,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  env:
+    BlobStorageRootUrl: https://iotdemotschissler.blob.core.windows.net/firmwareupdates
+    CurrentFirmwareVersion: v$GITHUB_RUN_NUMBER
+    IoTHubConnectionString: HostName=IoTHub-tschissler.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=FecNNDaJpTDn0Bv1goAWu3QdyIpBD7HQ1B9+HA7JpD0=
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -30,6 +33,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - name: Replace tokens
+        # You may pin to the exact commit or the version.
+        # uses: cschleiden/replace-tokens@121d9153eda2951d490e9f724a67ff095ab4c4f7
+        uses: cschleiden/replace-tokens@v1.0
+        with:
+          tokenPrefix: <
+          tokenSuffix: >
+          files: "**/*.cpp"
+
       # Runs a single command using the runners shell
       - name: Compile Firmware
         run: platformio run -e esp32dev -d ./08-DeviceTwinUpdate/
+
