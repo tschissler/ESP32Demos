@@ -10,7 +10,9 @@ resources:
     options: -u root    
 
 trigger:
-- master
+  paths:
+    include:
+    - 08-DeviceTwinUpdate/*
 
 stages:
 - stage: Build
