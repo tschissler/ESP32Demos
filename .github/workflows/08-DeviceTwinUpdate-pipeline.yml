@@ -59,7 +59,7 @@ jobs:
     steps:
       - run: echo "Using Run Number $GITHUB_RUN_NUMBER"
       - run: echo "Using Run Number " $GITHUB_RUN_NUMBER
-      - run: echo "Using Run Number " + $env.GITHUB_RUN_NUMBER
+      - run: echo "Using Run Number {{github.run_number}}"
       
       - name: Download Firmware
         uses: actions/download-artifact@v2.0.9
@@ -73,5 +73,5 @@ jobs:
           connection_string: DefaultEndpointsProtocol=https;AccountName=iotdemotschissler;AccountKey=/U66uH+yigYKgY8JPWAMTTYO+CFPfsO9RTQGMcRImx7Ssb+qsr0iqjU5UZTQmkJd6p1NiaqQFnXCpTYtm0k4zg==;BlobEndpoint=https://iotdemotschissler.blob.core.windows.net/;QueueEndpoint=https://iotdemotschissler.queue.core.windows.net/;TableEndpoint=https://iotdemotschissler.table.core.windows.net/;FileEndpoint=https://iotdemotschissler.file.core.windows.net/;
           container_name: firmwareupdates
           source_folder: 08-DeviceTwinUpdate/.pio/build/esp32dev
-          destination_folder: "v$GITHUB_RUN_NUMBER"
+          destination_folder: "v{{github.run_number}}"
           fail_if_source_empty: true
