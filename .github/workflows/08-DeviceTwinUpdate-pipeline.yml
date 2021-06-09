@@ -57,9 +57,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      #- run: console.log("Using Run Number $GITHUB_RUN_NUMBER")
-      #- run: console.log("Using Run Number " + $GITHUB_RUN_NUMBER)
-      - run: console.log("Using Run Number " + $env.GITHUB_RUN_NUMBER)
+      - run: echo "Using Run Number $GITHUB_RUN_NUMBER"
+      - run: echo "Using Run Number " + $GITHUB_RUN_NUMBER
+      - run: echo "Using Run Number " + $env.GITHUB_RUN_NUMBER
       
       - name: Download Firmware
         uses: actions/download-artifact@v2.0.9
