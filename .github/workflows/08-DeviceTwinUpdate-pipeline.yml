@@ -50,7 +50,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
           
-  Push To Blob:
+  PushToBlob:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     needs: [build]
@@ -77,9 +77,9 @@ jobs:
         with:
           inlineScript: 'az storage blob upload --account-name iotdemotschissler --container-name firmwareupdates --file $(Build.ArtifactStagingDirectory)/firmware.bin --name firmware-$(Build.BuildNumber).bin'
 
-  Update Device Twin:
+  UpdateDeviceTwin:
     runs-on: ubuntu-latest
-    needs: [Push To Blob]
+    needs: [PushToBlob]
     
     steps:
       - name: Update Firmware version on Device Twin
